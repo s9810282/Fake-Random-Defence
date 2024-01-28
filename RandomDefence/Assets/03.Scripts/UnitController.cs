@@ -21,13 +21,25 @@ public class UnitController : MonoBehaviour
         
     }
 
-    public void ClickSelect(Unit unit)
+    public void ClickSelectUnit(Unit unit)
     {
+        DeSelectUnitAll();
 
+        SelectUnit(unit);
     }
-    public void ShiftClickSelect(Unit unit)
-    {
 
+    public void ShiftClickSelectUnit(Unit unit)
+    {
+        if(selectedUnitList.Contains(unit))
+        {
+            DeSelectUnit(unit);
+        }
+        else
+        {
+            SelectUnit(unit);
+
+            Debug.Log("shift");
+        }
     }
 
     public void DeSelectUnitAll()

@@ -11,7 +11,7 @@ public class Unit: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MoveTo(new Vector3(10, transform.position.y, 10));
+        //MoveTo(new Vector3(10, transform.position.y, 10));
     }
 
     public void SelectUnit()
