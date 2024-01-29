@@ -8,6 +8,8 @@ public class Unit: MonoBehaviour
     [SerializeField] GameObject marker;
     [SerializeField] NavMeshAgent nav;
 
+    [SerializeField] Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
