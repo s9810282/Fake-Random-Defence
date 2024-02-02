@@ -9,19 +9,23 @@ public class MouseClick : MonoBehaviour
     [SerializeField] Camera mainCamera;
     [SerializeField] LayerMask unitLayer;
 
+    [SerializeField] LayerMask groundLayer;
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
+    RaycastHit hit;
+    Ray ray;
+
     // Update is called once per frame
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
             if(Physics.Raycast(ray, out hit, Mathf.Infinity, unitLayer))
             {
@@ -36,6 +40,18 @@ public class MouseClick : MonoBehaviour
             {
                 if (!Input.GetKeyDown(KeyCode.LeftShift))
                     unitController.DeSelectUnitAll();
+            }
+
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+            {
+                unitController.UnitMoveTo(hit.point);
             }
         }
     }

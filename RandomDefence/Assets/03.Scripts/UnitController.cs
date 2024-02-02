@@ -23,6 +23,8 @@ public class UnitController : MonoBehaviour
 
     public void UnitMoveTo(Vector3 vector)
     {
+        Debug.Log(vector);
+
         for (int i = 0; i < selectedUnitList.Count; i++)
             selectedUnitList[i].MoveTo(vector);
     }

@@ -28,6 +28,28 @@ public class Unit: MonoBehaviour
 
     public void MoveTo(Vector3 pos)
     {
+        StopCoroutine("MoveOn");
+
         nav.SetDestination(pos);
+
+        StartCoroutine("MoveOn");
+    }
+
+    IEnumerator MoveOn()
+    {
+        Debug.Log("Move");
+
+        while(true)
+        {
+            if (Vector3.Distance(transform.position, nav.destination) < 0.1f)
+            {
+                transform.position = nav.destination;
+                nav.ResetPath();
+
+                break;
+            }
+
+            yield return null;
+        }
     }
 }
