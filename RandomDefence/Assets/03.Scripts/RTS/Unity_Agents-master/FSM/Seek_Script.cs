@@ -26,15 +26,15 @@ public class Seek_Script : MonoBehaviour
             //bb.fleeScript.weight = 1.0f;
             //bb.fleeScript.enabled = true;
 
-            bb.boidCoh = gameObject.AddComponent<BoidCohesion>();
-            bb.boidCoh.targets = bb.target.GetComponent<Squad_Parent_Script>().children;
-            bb.boidCoh.weight = 0.4f;
-            bb.boidCoh.enabled = true;
+            //bb.boidCoh = gameObject.AddComponent<BoidCohesion>();
+            //bb.boidCoh.targets = bb.target.GetComponent<Squad_Parent_Script>().children;
+            //bb.boidCoh.weight = 0.4f;
+            //bb.boidCoh.enabled = true;
 
-            bb.boidSep = gameObject.AddComponent<BoidSeparation>();
-            bb.boidSep.targets = bb.target.GetComponent<Squad_Parent_Script>().children;
-            bb.boidSep.weight = 70.0f;
-            bb.boidSep.enabled = true;
+            //bb.boidSep = gameObject.AddComponent<BoidSeparation>();
+            //bb.boidSep.targets = bb.target.GetComponent<Squad_Parent_Script>().children;
+            //bb.boidSep.weight = 70.0f;
+            //bb.boidSep.enabled = true;
 
         }
 
