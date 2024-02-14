@@ -8,6 +8,8 @@ public class Unit: MonoBehaviour
     [SerializeField] GameObject marker;
     [SerializeField] NavMeshAgent nav;
 
+    [SerializeField] float stopDistance;
+
     [SerializeField] Animator anim;
 
     // Start is called before the first frame update
@@ -26,6 +28,12 @@ public class Unit: MonoBehaviour
         marker.gameObject.SetActive(false);
     }
 
+    public void ClearTarget()
+    {
+        StopCoroutine("MoveOn");
+        nav.ResetPath();
+    }
+
     public void MoveTo(Vector3 pos)
     {
         StopCoroutine("MoveOn");
@@ -41,7 +49,7 @@ public class Unit: MonoBehaviour
 
         while(true)
         {
-            if (Vector3.Distance(transform.position, nav.destination) < 0.1f)
+            if (Vector3.Distance(transform.position, nav.destination) < stopDistance)
             {
                 transform.position = nav.destination;
                 nav.ResetPath();
