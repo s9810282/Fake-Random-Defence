@@ -18,7 +18,12 @@ public class PathFinding
         grid = new Grid<PathNode>(width, heigh, 10f, Vector3.zero, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
     }
 
-    private List<PathNode> FindPath(int startX, int startY, int endX, int endY)
+    public Grid<PathNode> GetGrid()
+    {
+        return grid;
+    }
+
+    public List<PathNode> FindPath(int startX, int startY, int endX, int endY)
     {
         PathNode startNode = grid.GetGridObject(startX, startY);
         PathNode endNode = grid.GetGridObject(endX, endY);
@@ -28,9 +33,10 @@ public class PathFinding
 
         for(int x = 0; x < grid.GetWidth(); x++)
         {
-            for (int y = 0; x < grid.GetHeight(); y++)
+            for (int y = 0; y < grid.GetHeight(); y++)
             {
                 PathNode pathNode = grid.GetGridObject(x, y);
+
                 pathNode.gCost = int.MaxValue;
                 pathNode.CalculateFCost();
                 pathNode.cameFromNode = null;
@@ -53,25 +59,65 @@ public class PathFinding
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
+            foreach (PathNode node in GetNeighbourList(currentNode))
+            {
+                if (closedList.Contains(node)) continue;
 
+                int tempGCost = currentNode.gCost + CaculateDistance(currentNode, node);
+
+                if(tempGCost < node.gCost)
+                {
+                    node.cameFromNode = currentNode;
+                    node.gCost = tempGCost;
+                    node.hCost = CaculateDistance(node, endNode);
+                    node.CalculateFCost();
+
+                    if (!openList.Contains(node)) openList.Add(node);
+
+                }
+            }
         }
 
         return null;
     }
 
-    public List<PathNode> GetNeighbourList(PathNode currentNode)
+    public List<PathNode> GetNeighbourList(PathNode currentNode) //GetNeighbour All Node (8 Node)
     {
         List<PathNode> neighbourList = new List<PathNode>();
 
-        if (currentNode.x - 1 >= 0)
+        if (currentNode.x - 1 >= 0)  //current Node x - 1 => grid.MaxX 
         {
+            //Left
             neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
 
-            if(currentNode.y - 1 >= 0)
-            {
-                neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1));
-            }
+            //Left Down
+            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1));
+
+            //LeftUp
+            if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1));
+
         }
+
+        if (currentNode.x + 1 < grid.GetWidth()) //current Node x + 1 < grid.EndX
+        {
+            //Right
+            neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y));
+
+            //Right Down
+            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1));
+
+            //Right Up
+            if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1));
+        }
+
+        //Down
+        if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1));
+
+        //Up
+        if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1));
+
+
+        return neighbourList;
     }
 
     private PathNode GetNode(int x, int y)
@@ -82,7 +128,19 @@ public class PathFinding
 
     private List<PathNode> CalculatePath(PathNode endNode)
     {
-        throw new NotImplementedException();
+        List<PathNode> path = new List<PathNode>();
+        path.Add(endNode);
+
+        PathNode currentNode = endNode;
+
+        while(currentNode.cameFromNode != null)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.cameFromNode;
+        }
+
+        path.Reverse();
+        return path;
     }
 
     public int CaculateDistance(PathNode a, PathNode b)
