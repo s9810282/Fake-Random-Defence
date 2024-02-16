@@ -5,22 +5,62 @@ using UnityEngine;
 public class UnitController : MonoBehaviour
 {
 
+    [SerializeField] PathFinding pathFinding;
+
+    [SerializeField] int maxX;
+    [SerializeField] int maxY;
+    [SerializeField] float cellSize;
+    [SerializeField] float scale;
+    [SerializeField] Vector3 origin;
+
     [SerializeField] List<Unit> selectedUnitList = new List<Unit>();
     [SerializeField] List<Unit> unitList = new List<Unit>();
 
 
     void Start()
     {
+        pathFinding = new PathFinding(maxX, maxY, cellSize, origin);
         selectedUnitList = new List<Unit>();
+
         //unitList = new List<Unit>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
+
+    public void PathFinding(Vector3 pos)
+    {
+        //Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+       
+    }
+
+    public void ShowPathGrid(Vector3 pos)
+    {
+        Debug.Log("Show");
+
+        pathFinding.GetGrid().GetXY3D(pos, out int x, out int y);
+
+        Debug.Log(x + " " + y);
+
+        List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
+
+        if (path != null)
+        {
+            Debug.Log(path[0].x);
+            Debug.Log(path[0].y);
+
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Debug.Log(path[i].x + ", " + path[i].y);
+                Debug.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
+            }
+        }
+    }
 
 
     public void UnitMoveTo(Vector3 vector)

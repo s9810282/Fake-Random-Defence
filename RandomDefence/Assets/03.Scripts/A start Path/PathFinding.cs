@@ -3,19 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class PathFinding
 {
     private const int MOVE_STRAIGHT_COST = 10;
     private const int MOVE_DIAGONAL_COST = 14;
 
-    private Grid<PathNode> grid;
+    public Grid<PathNode> grid;
 
     private List<PathNode> openList;
     private List<PathNode> closedList;
 
-    public PathFinding(int width, int heigh)
+    public PathFinding(int width, int heigh, float cellSize, Vector3 originPos)
     {
-        grid = new Grid<PathNode>(width, heigh, 10f, Vector3.zero, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
+        grid = new Grid<PathNode>(width, heigh, cellSize, originPos, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
     }
 
     public Grid<PathNode> GetGrid()
@@ -27,6 +28,9 @@ public class PathFinding
     {
         PathNode startNode = grid.GetGridObject(startX, startY);
         PathNode endNode = grid.GetGridObject(endX, endY);
+
+        Debug.Log(endNode.x);
+        Debug.Log(endNode.y);
 
         openList = new List<PathNode> { startNode };
         closedList = new List<PathNode>();
@@ -62,6 +66,11 @@ public class PathFinding
             foreach (PathNode node in GetNeighbourList(currentNode))
             {
                 if (closedList.Contains(node)) continue;
+                if (!node.isWalkable)
+                {
+                    closedList.Add(node);
+                    continue;
+                }
 
                 int tempGCost = currentNode.gCost + CaculateDistance(currentNode, node);
 
@@ -81,7 +90,7 @@ public class PathFinding
         return null;
     }
 
-    public List<PathNode> GetNeighbourList(PathNode currentNode) //GetNeighbour All Node (8 Node)
+    public List<PathNode> GetNeighbourList(PathNode currentNode) //GetNeighbour All Node (8 Node)  
     {
         List<PathNode> neighbourList = new List<PathNode>();
 
@@ -120,7 +129,9 @@ public class PathFinding
         return neighbourList;
     }
 
-    private PathNode GetNode(int x, int y)
+
+
+    public PathNode GetNode(int x, int y)
     {
         return grid.GetGridObject(x, y);
     }

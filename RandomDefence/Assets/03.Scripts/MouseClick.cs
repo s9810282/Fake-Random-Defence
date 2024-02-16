@@ -35,6 +35,7 @@ public class MouseClick : MonoBehaviour
                     unitController.ShiftClickSelectUnit(hit.transform.GetComponent<Unit>());
                 else 
                     unitController.ClickSelectUnit(hit.transform.GetComponent<Unit>());
+
             }
             else
             {
@@ -51,6 +52,10 @@ public class MouseClick : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
             {
+                if (hit.collider == null) return;
+
+                unitController.ShowPathGrid(hit.point);
+
                 unitController.UnitMoveTo(hit.point);
             }
         }

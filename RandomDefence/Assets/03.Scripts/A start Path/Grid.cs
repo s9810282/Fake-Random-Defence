@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Grid<TGridObject> {
 
     public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
@@ -27,9 +28,10 @@ public class Grid<TGridObject> {
     private int height;
     private float cellSize;
     private Vector3 originPosition;
-    private TGridObject[,] gridArray;
+    public TGridObject[,] gridArray;
 
     public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+        
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
@@ -37,25 +39,48 @@ public class Grid<TGridObject> {
 
         gridArray = new TGridObject[width, height];
 
+        //아 시발 여기다 OriginPos 위치가 다르니까 당연히 Min은 0이 아니고 Max가 Widht가 아님
+        //그러니까 NeighboirList가 아무것도 반환이 안됨
+
+        //아 시발 자살마렵네
+
+        //MapScale 50
+        //Map Size 10*10
+
+        //지금 PathNode x, y 값에 world 상의 x,z 값을 넣어야함
+        //왼쪽 맨아래 칸이 -0.5,-0.5 오른쪽 맨위가 0.5,0.5
+        //그니까 한칸당 0.1의 위치 차이를 가지고 있음
+
+        //이웃된 노드 가져올 때 if문 수정해야함
+
         for (int x = 0; x < gridArray.GetLength(0); x++) {
             for (int y = 0; y < gridArray.GetLength(1); y++) {
-                gridArray[x, y] = createGridObject(this, x, y);
+
+                gridArray[x, y] = createGridObject(this, x + (int)originPosition.x, y + (int)originPosition.z);  //아 시발
             }
         }
+
 
         bool showDebug = true;
         if (showDebug) {
             TextMesh[,] debugTextArray = new TextMesh[width, height];
 
             for (int x = 0; x < gridArray.GetLength(0); x++) {
-                for (int y = 0; y < gridArray.GetLength(1); y++) {                    //debugTextArray[x, y] = UtilsClass.CreateWorldText(gridArray[x, y]?.ToString(), null, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 30, Color.white, TextAnchor.MiddleCenter);
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
-                    Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
+                for (int y = 0; y < gridArray.GetLength(1); y++) {                    
+                    //debugTextArray[x, y] = UtilsClass.CreateWorldText(gridArray[x, y]?.ToString(), null, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 30, Color.white, TextAnchor.MiddleCenter);
+                    //Debug.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x, y + 1), Color.black, 100f);
+                    //Debug.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x + 1, y), Color.black, 100f);
+
+                    Debug.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x, 0, y + 1), Color.black, 100f);
+                    Debug.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x + 1, 0 , y), Color.black, 100f);
                 }
             }
 
-            Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
-            Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
+            //Debug.DrawLine(GetWorldPosition2D(0, height), GetWorldPosition2D(width, height), Color.black, 100f);
+            //Debug.DrawLine(GetWorldPosition2D(width, 0), GetWorldPosition2D(width, height), Color.black, 100f);
+
+            Debug.DrawLine(GetWorldPosition3D(0, 0, height), GetWorldPosition3D(width, 0, height), Color.black, 100f);
+            Debug.DrawLine(GetWorldPosition3D(width, 0, 0), GetWorldPosition3D(width, 0, height), Color.black, 100f);
 
             OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) => {
                 debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
@@ -75,13 +100,29 @@ public class Grid<TGridObject> {
         return cellSize;
     }
 
-    public Vector3 GetWorldPosition(int x, int y) {
+    public Vector3 GetOriginPos()
+    {
+        return originPosition;
+    }
+
+    public Vector3 GetWorldPosition2D(int x, int y) {
         return new Vector3(x, y) * cellSize + originPosition;
+    }
+
+    public Vector3 GetWorldPosition3D(int x, int y = 0, int z = 0)
+    {
+        return new Vector3(x, y, z) * cellSize + originPosition;
     }
 
     public void GetXY(Vector3 worldPosition, out int x, out int y) {
         x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
         y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
+    }
+
+    public void GetXY3D(Vector3 worldPosition, out int x, out int z)
+    {
+        x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
+        z = Mathf.FloorToInt((worldPosition - originPosition).z / cellSize);
     }
 
     public void SetGridObject(int x, int y, TGridObject value) {
