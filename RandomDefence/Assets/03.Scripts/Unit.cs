@@ -11,6 +11,11 @@ public class Unit: MonoBehaviour
     [SerializeField] float stopDistance;
 
     [SerializeField] Animator anim;
+    [SerializeField] bool isMove = false;
+
+
+    //FSM 쓰도록 합시다. 일단 무빙 구현 ㄱ ㄱ
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,11 +23,17 @@ public class Unit: MonoBehaviour
         //MoveTo(new Vector3(10, transform.position.y, 10));
     }
 
+    private void Update()
+    {
+        
+    }
+
+
+
     public void SelectUnit()
     {
         marker.gameObject.SetActive(true);
     }
-
     public void DeSelectUnit()
     {
         marker.gameObject.SetActive(false);

@@ -54,8 +54,7 @@ public class MouseClick : MonoBehaviour
             {
                 if (hit.collider == null) return;
 
-                unitController.ShowPathGrid(hit.point);
-
+                unitController.PathFinding(hit.point);
                 unitController.UnitMoveTo(hit.point);
             }
         }

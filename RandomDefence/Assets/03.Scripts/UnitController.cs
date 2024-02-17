@@ -32,14 +32,8 @@ public class UnitController : MonoBehaviour
     }
 
 
+
     public void PathFinding(Vector3 pos)
-    {
-        //Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-       
-    }
-
-    public void ShowPathGrid(Vector3 pos)
     {
         Debug.Log("Show");
 
@@ -47,17 +41,22 @@ public class UnitController : MonoBehaviour
 
         Debug.Log(x + " " + y);
 
-        List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
+        List<PathNode> path = pathFinding.FindPath(0, 0, x, y); //지금은 그냥 0,0 인덱스부터 검색
 
         if (path != null)
         {
             Debug.Log(path[0].x);
             Debug.Log(path[0].y);
 
+            Debug.DrawLine(origin, path[0].worldPosition, Color.black, 10f);
+
             for (int i = 0; i < path.Count - 1; i++)
             {
-                Debug.Log(path[i].x + ", " + path[i].y);
-                Debug.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
+                Debug.Log(path[i].worldPosition);
+                Debug.Log(path[i+1].worldPosition);
+
+                //Debug.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
+                Debug.DrawLine(path[i].worldPosition, path[i + 1].worldPosition, Color.black, 10f);
             }
         }
     }
@@ -69,6 +68,11 @@ public class UnitController : MonoBehaviour
 
         for (int i = 0; i < selectedUnitList.Count; i++)
             selectedUnitList[i].MoveTo(vector);
+    }
+
+    public void UnitMoveTo(List<PathNode> path)
+    {
+
     }
 
 

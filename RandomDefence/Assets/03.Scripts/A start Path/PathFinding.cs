@@ -16,7 +16,7 @@ public class PathFinding
 
     public PathFinding(int width, int heigh, float cellSize, Vector3 originPos)
     {
-        grid = new Grid<PathNode>(width, heigh, cellSize, originPos, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
+        grid = new Grid<PathNode>(width, heigh, cellSize, originPos, (Grid<PathNode> grid, int x, int y, Vector3 pos) => new PathNode(grid, x, y, pos));
     }
 
     public Grid<PathNode> GetGrid()
@@ -94,6 +94,14 @@ public class PathFinding
     {
         List<PathNode> neighbourList = new List<PathNode>();
 
+        //float minX = grid.GetOriginPos().x;// + grid.GetCellSize() / 2;
+        //float minZ = grid.GetOriginPos().z;// + grid.GetCellSize() / 2;
+        //float maxX = Mathf.Abs(grid.GetOriginPos().x);
+        //float maxZ = Mathf.Abs(grid.GetOriginPos().z);
+        //float cellSize = grid.GetCellSize();
+
+
+        //이 방식은 사실상 Index로 하는거나 다름이 없음
         if (currentNode.x - 1 >= 0)  //current Node x - 1 => grid.MaxX 
         {
             //Left
@@ -134,6 +142,11 @@ public class PathFinding
     public PathNode GetNode(int x, int y)
     {
         return grid.GetGridObject(x, y);
+    }
+
+    public PathNode GetNode(Vector3 pos)
+    {
+        return grid.GetGridObject(pos);
     }
 
 

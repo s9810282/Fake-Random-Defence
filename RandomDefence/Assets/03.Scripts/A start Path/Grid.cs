@@ -27,10 +27,11 @@ public class Grid<TGridObject> {
     private int width;
     private int height;
     private float cellSize;
+    private float offset;
     private Vector3 originPosition;
     public TGridObject[,] gridArray;
 
-    public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+    public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, Vector3, TGridObject> createGridObject) {
         
         this.width = width;
         this.height = height;
@@ -39,24 +40,43 @@ public class Grid<TGridObject> {
 
         gridArray = new TGridObject[width, height];
 
-        //아 시발 여기다 OriginPos 위치가 다르니까 당연히 Min은 0이 아니고 Max가 Widht가 아님
-        //그러니까 NeighboirList가 아무것도 반환이 안됨
-
-        //아 시발 자살마렵네
-
+       
         //MapScale 50
         //Map Size 10*10
+        //CellSize 5
+        //Offset = CellSize / 2
 
-        //지금 PathNode x, y 값에 world 상의 x,z 값을 넣어야함
-        //왼쪽 맨아래 칸이 -0.5,-0.5 오른쪽 맨위가 0.5,0.5
-        //그니까 한칸당 0.1의 위치 차이를 가지고 있음
+        //지금 PathNode x, y 값에 world 상의 x,z 값을 넣어야함 => 이게 아니 PathNode에 추가로 worldPos 변수 추가
 
-        //이웃된 노드 가져올 때 if문 수정해야함
+        //start   -22.5 + 5*x 
+
+        // orginPos.x + 2.5 + cellSize * x
+
+        //왼쪽 맨아래 칸이 -22.5, -22.5 오른쪽 맨위가 22.5 ,22.5
+
+
+        float originX = originPosition.x;
+        float originZ = originPosition.z;
+
+        Debug.Log("OriginX : " + originX);
+        Debug.Log("OriginZ : " + originZ);
+
+        offset = (cellSize / 2);
+
+        Debug.Log("Offset : " + offset);
+
+        float tmpX = 0;
+        float tmpZ = 0;
+
 
         for (int x = 0; x < gridArray.GetLength(0); x++) {
-            for (int y = 0; y < gridArray.GetLength(1); y++) {
+            
+            tmpX = originX + offset + cellSize * x;
 
-                gridArray[x, y] = createGridObject(this, x + (int)originPosition.x, y + (int)originPosition.z);  //아 시발
+            for (int y = 0; y < gridArray.GetLength(1); y++) {
+            
+                tmpZ = originZ + offset + cellSize * y;
+                gridArray[x, y] = createGridObject(this, x, y, new Vector3(tmpX, 0, tmpZ));
             }
         }
 
