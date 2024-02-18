@@ -13,19 +13,20 @@ public class Unit: MonoBehaviour
     [SerializeField] Animator anim;
     [SerializeField] bool isMove = false;
 
+    [SerializeField] FSM fsm;
 
     //FSM 쓰도록 합시다. 일단 무빙 구현 ㄱ ㄱ
 
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-        //MoveTo(new Vector3(10, transform.position.y, 10));
+        fsm = new FSM(new IdleState(this));
     }
 
-    private void Update()
+    protected virtual void Update()
     {
-        
+        fsm.UpdateState();
     }
 
 
@@ -38,37 +39,24 @@ public class Unit: MonoBehaviour
     {
         marker.gameObject.SetActive(false);
     }
-
     public void ClearTarget()
     {
         StopCoroutine("MoveOn");
         nav.ResetPath();
     }
-
     public void MoveTo(Vector3 pos)
     {
-        StopCoroutine("MoveOn");
-
-        nav.SetDestination(pos);
-
-        StartCoroutine("MoveOn");
+        
     }
 
-    IEnumerator MoveOn()
+    public void MoveTo(List<PathNode> path)
     {
-        Debug.Log("Move");
-
-        while(true)
-        {
-            if (Vector3.Distance(transform.position, nav.destination) < stopDistance)
-            {
-                transform.position = nav.destination;
-                nav.ResetPath();
-
-                break;
-            }
-
-            yield return null;
-        }
+        anim.SetBool("isMove", true);
+        fsm.ChangeState(new MoveState(this, path));
+    }
+    public void ArriveTarget()
+    {
+        anim.SetBool("isMove", false);
+        fsm.ChangeState(new IdleState(this));
     }
 }

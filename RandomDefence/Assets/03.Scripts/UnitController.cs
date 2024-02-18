@@ -16,6 +16,8 @@ public class UnitController : MonoBehaviour
     [SerializeField] List<Unit> selectedUnitList = new List<Unit>();
     [SerializeField] List<Unit> unitList = new List<Unit>();
 
+    [SerializeField] Unit testUnit;
+
 
     void Start()
     {
@@ -33,32 +35,35 @@ public class UnitController : MonoBehaviour
 
 
 
-    public void PathFinding(Vector3 pos)
+    public void PathFinding(Vector3 pos) //이걸 선택한 유닛수만큼 따로 따로 돌려야함
     {
         Debug.Log("Show");
 
         pathFinding.GetGrid().GetXY3D(pos, out int x, out int y);
 
-        Debug.Log(x + " " + y);
-
-        List<PathNode> path = pathFinding.FindPath(0, 0, x, y); //지금은 그냥 0,0 인덱스부터 검색
-
-        if (path != null)
+        for(int i = 0; i < selectedUnitList.Count; i++)
         {
-            Debug.Log(path[0].x);
-            Debug.Log(path[0].y);
+            pathFinding.GetGrid().GetXY3D(selectedUnitList[i].transform.position, out int a, out int b);
+            List<PathNode> path = pathFinding.FindPath(a, b, x, y); //지금은 그냥 0,0 인덱스부터 검색
 
-            Debug.DrawLine(origin, path[0].worldPosition, Color.black, 10f);
-
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Debug.Log(path[i].worldPosition);
-                Debug.Log(path[i+1].worldPosition);
-
-                //Debug.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
-                Debug.DrawLine(path[i].worldPosition, path[i + 1].worldPosition, Color.black, 10f);
-            }
+            UnitMoveTo(path);
         }
+
+        //pathFinding.GetGrid().GetXY3D(testUnit.transform.position, out int a, out int b);
+        //List<PathNode> path = pathFinding.FindPath(a, b, x, y); //지금은 그냥 0,0 인덱스부터 검색
+
+        //UnitMoveTo(path);
+
+        //if (path != null)
+        //{
+        //    Debug.DrawLine(transform.position, path[0].worldPosition, Color.black, 10f);
+
+        //    for (int i = 0; i < path.Count - 1; i++)
+        //    {
+        //        //Debug.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
+        //        Debug.DrawLine(path[i].worldPosition, path[i + 1].worldPosition, Color.black, 10f);
+        //    }
+        //}
     }
 
 
@@ -72,7 +77,10 @@ public class UnitController : MonoBehaviour
 
     public void UnitMoveTo(List<PathNode> path)
     {
+        for (int i = 0; i < selectedUnitList.Count; i++)
+            selectedUnitList[i].MoveTo(path);
 
+        //testUnit.MoveTo(path);
     }
 
 
