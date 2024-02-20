@@ -12,12 +12,12 @@ public class IdleState : BaseState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Enter Idle");
+
     }
 
     public override void OnStateExit()
     {
-        Debug.Log("Exit Idle");
+
     }
 
     public override void OnStateUpdate()

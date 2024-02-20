@@ -11,12 +11,12 @@ public class AttackState : BaseState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Enter Attack");
+        
     }
 
     public override void OnStateExit()
     {
-        Debug.Log("Exit Attack");
+        
     }
 
     public override void OnStateUpdate()

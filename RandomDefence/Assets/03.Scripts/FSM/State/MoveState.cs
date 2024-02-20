@@ -20,21 +20,18 @@ public class MoveState : BaseState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Enter Move");
         MoveTo(movePath);
     }
 
     public override void OnStateExit()
     {
-        Debug.Log("Exit Move");
+
     }
 
     public override void OnStateUpdate()
     {
         if (isMove)
         {
-            Debug.Log("Update Move");
-
             var step = 10f * Time.deltaTime; // calculate distance to move
             unit.transform.position = Vector3.MoveTowards(unit.transform.position, targetPos, step);
             unit.transform.LookAt(targetPos, Vector3.up);
@@ -53,9 +50,6 @@ public class MoveState : BaseState
         currentCount = 0;
 
         targetPos = new Vector3(path[currentCount].worldPosition.x, 0.2f, path[currentCount].worldPosition.z);
-        
-
-        Debug.Log("Move");
     }
 
     public void MoveTo(Vector3 pos)

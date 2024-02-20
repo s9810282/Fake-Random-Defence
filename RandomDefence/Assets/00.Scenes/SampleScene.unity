@@ -1609,9 +1609,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathFinding: {}
-  maxX: 10
-  maxY: 10
-  cellSize: 5
+  maxX: 50
+  maxY: 50
+  cellSize: 1
   scale: 1
   origin: {x: -25, y: 0, z: -25}
   selectedUnitList: []
@@ -1621,7 +1621,7 @@ MonoBehaviour:
   - {fileID: 1817326613}
   - {fileID: 664174271}
   - {fileID: 904341172}
-  testUnit: {fileID: 1381699967}
+  isDebug: 1
 --- !u!1 &578564948
 GameObject:
   m_ObjectHideFlags: 0

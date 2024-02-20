@@ -58,12 +58,12 @@ public class Grid<TGridObject> {
         float originX = originPosition.x;
         float originZ = originPosition.z;
 
-        Debug.Log("OriginX : " + originX);
-        Debug.Log("OriginZ : " + originZ);
+        DebugTool.Log("OriginX : " + originX);
+        DebugTool.Log("OriginZ : " + originZ);
 
         offset = (cellSize / 2);
 
-        Debug.Log("Offset : " + offset);
+        DebugTool.Log("Offset : " + offset);
 
         float tmpX = 0;
         float tmpZ = 0;
@@ -88,19 +88,19 @@ public class Grid<TGridObject> {
             for (int x = 0; x < gridArray.GetLength(0); x++) {
                 for (int y = 0; y < gridArray.GetLength(1); y++) {                    
                     //debugTextArray[x, y] = UtilsClass.CreateWorldText(gridArray[x, y]?.ToString(), null, GetWorldPosition(x, y) + new Vector3(cellSize, cellSize) * .5f, 30, Color.white, TextAnchor.MiddleCenter);
-                    //Debug.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x, y + 1), Color.black, 100f);
-                    //Debug.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x + 1, y), Color.black, 100f);
+                    //DebugTool.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x, y + 1), Color.black, 100f);
+                    //DebugTool.DrawLine(GetWorldPosition2D(x, y), GetWorldPosition2D(x + 1, y), Color.black, 100f);
 
-                    Debug.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x, 0, y + 1), Color.black, 100f);
-                    Debug.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x + 1, 0 , y), Color.black, 100f);
+                    DebugTool.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x, 0, y + 1), Color.black, 100f);
+                    DebugTool.DrawLine(GetWorldPosition3D(x, 0, y), GetWorldPosition3D(x + 1, 0 , y), Color.black, 100f);
                 }
             }
 
-            //Debug.DrawLine(GetWorldPosition2D(0, height), GetWorldPosition2D(width, height), Color.black, 100f);
-            //Debug.DrawLine(GetWorldPosition2D(width, 0), GetWorldPosition2D(width, height), Color.black, 100f);
+            //DebugTool.DrawLine(GetWorldPosition2D(0, height), GetWorldPosition2D(width, height), Color.black, 100f);
+            //DebugTool.DrawLine(GetWorldPosition2D(width, 0), GetWorldPosition2D(width, height), Color.black, 100f);
 
-            Debug.DrawLine(GetWorldPosition3D(0, 0, height), GetWorldPosition3D(width, 0, height), Color.black, 100f);
-            Debug.DrawLine(GetWorldPosition3D(width, 0, 0), GetWorldPosition3D(width, 0, height), Color.black, 100f);
+            DebugTool.DrawLine(GetWorldPosition3D(0, 0, height), GetWorldPosition3D(width, 0, height), Color.black, 100f);
+            DebugTool.DrawLine(GetWorldPosition3D(width, 0, 0), GetWorldPosition3D(width, 0, height), Color.black, 100f);
 
             OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) => {
                 debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();

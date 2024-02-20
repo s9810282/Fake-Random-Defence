@@ -26,19 +26,25 @@ public class PathFinding
 
     public List<PathNode> FindPath(int startX, int startY, int endX, int endY)
     {
+        DebugTool.Log(startX + " " + startY);
+
         PathNode startNode = grid.GetGridObject(startX, startY);
         PathNode endNode = grid.GetGridObject(endX, endY);
 
         openList = new List<PathNode> { startNode };
         closedList = new List<PathNode>();
 
-        for(int x = 0; x < grid.GetWidth(); x++)
+        DebugTool.Log("Open List :  " + openList.Count);
+        DebugTool.Log("Closed List :  " + closedList.Count);
+
+        for (int x = 0; x < grid.GetWidth(); x++)
         {
             for (int y = 0; y < grid.GetHeight(); y++)
             {
                 PathNode pathNode = grid.GetGridObject(x, y);
 
                 pathNode.gCost = int.MaxValue;
+                pathNode.hCost = 0;
                 pathNode.CalculateFCost();
                 pathNode.cameFromNode = null;
             }

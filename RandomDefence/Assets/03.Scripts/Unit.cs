@@ -54,6 +54,7 @@ public class Unit: MonoBehaviour
         anim.SetBool("isMove", true);
         fsm.ChangeState(new MoveState(this, path));
     }
+
     public void ArriveTarget()
     {
         anim.SetBool("isMove", false);

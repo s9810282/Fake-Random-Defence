@@ -27,13 +27,13 @@ public class PathTEst : MonoBehaviour
 
             if (path != null)
             {
-                Debug.Log(path[0].x);
-                Debug.Log(path[0].y);
+                DebugTool.Log(path[0].x);
+                DebugTool.Log(path[0].y);
 
                 for (int i = 0; i < path.Count - 1; i++)
                 {
-                    Debug.Log(path[i].x + ", " + path[i].y);
-                    Debug.DrawLine(new Vector3(path[i].x, path[i].y) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f, Color.black, 10f);
+                    DebugTool.Log(path[i].x + ", " + path[i].y);
+                    DebugTool.DrawLine(new Vector3(path[i].x, path[i].y) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f, Color.black, 10f);
                 }
             }
         }
