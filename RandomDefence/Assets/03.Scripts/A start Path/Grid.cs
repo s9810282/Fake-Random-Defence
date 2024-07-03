@@ -100,7 +100,7 @@ public class Grid<TGridObject> {
             //DebugTool.DrawLine(GetWorldPosition2D(width, 0), GetWorldPosition2D(width, height), Color.black, 100f);
 
             DebugTool.DrawLine(GetWorldPosition3D(0, 0, height), GetWorldPosition3D(width, 0, height), Color.black, 100f);
-            DebugTool.DrawLine(GetWorldPosition3D(width, 0, 0), GetWorldPosition3D(width, 0, height), Color.black, 100f);
+            DebugTool.DrawLine(GetWorldPosition3D(width, 0, 0), GetWorldPosition3D(width, 0, height), Color.black, 100f);   
 
             OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) => {
                 debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
