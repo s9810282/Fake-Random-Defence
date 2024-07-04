@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class UnitController : MonoBehaviour
 {
@@ -16,8 +18,13 @@ public class UnitController : MonoBehaviour
     [SerializeField] List<Unit> selectedUnitList = new List<Unit>();
     [SerializeField] List<Unit> unitList = new List<Unit>();
 
-
     [SerializeField] bool isDebug = true;
+
+    [Header("Event")]
+    GameEvent unitSelectEvent;
+    GameEvent unitsSelectEvent;
+    
+
 
     void Start()
     {
@@ -35,12 +42,21 @@ public class UnitController : MonoBehaviour
 
 
 
+    #region Move
+
     public void PathFinding(Vector3 pos) //이걸 선택한 유닛수만큼 따로 따로 돌려야함
     {
+        //이동불가 지역인가? 
+
+
         pathFinding.GetGrid().GetXY3D(pos, out int x, out int y);
+
+        int count = 0;
 
         for(int i = 0; i < selectedUnitList.Count; i++)
         {
+            count += i;
+
             pathFinding.GetGrid().GetXY3D(selectedUnitList[i].transform.position, out int a, out int b);
             List<PathNode> path = pathFinding.FindPath(a, b, x, y);
 
@@ -81,6 +97,12 @@ public class UnitController : MonoBehaviour
         if (selectedUnitList[index] != null)
             selectedUnitList[index].MoveTo(path);
     }
+
+    #endregion
+
+
+
+    #region Select
 
     public void DragSelect(Unit unit)
     {
@@ -140,6 +162,8 @@ public class UnitController : MonoBehaviour
     {
         return unitList;
     }
+
+    #endregion
 
 
 

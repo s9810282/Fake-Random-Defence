@@ -8,7 +8,6 @@ public class MouseClick : MonoBehaviour
 
     [SerializeField] Camera mainCamera;
     [SerializeField] LayerMask unitLayer;
-
     [SerializeField] LayerMask groundLayer;
 
     // Start is called before the first frame update
@@ -31,11 +30,13 @@ public class MouseClick : MonoBehaviour
             {
                 if (hit.collider == null) return;
 
-                if(Input.GetKey(KeyCode.LeftShift)) 
+                if (Input.GetKey(KeyCode.LeftShift))
                     unitController.ShiftClickSelectUnit(hit.transform.GetComponent<Unit>());
-                else 
+                else
+                {
+                    DebugTool.Log("Click One");
                     unitController.ClickSelectUnit(hit.transform.GetComponent<Unit>());
-
+                }
             }
             else
             {
