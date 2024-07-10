@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [Header("PlayerInfi")]
+    [Header("PlayerInfo")]
     [SerializeField] PlayerData playerData;
+    [SerializeField] GameUnitData unitData;
 
     [Header("Top Bar")]
     [SerializeField] TextMeshProUGUI goldText;
@@ -24,7 +25,7 @@ public class UIController : MonoBehaviour
 
     [Space(20f)]
     [SerializeField] Image selectUnitImage;
-
+    [Space(10f)]
     [SerializeField] GameObject selectUnitInfo;
     [SerializeField] TextMeshProUGUI selectUnitRarityText;
     [SerializeField] TextMeshProUGUI selectUnitNameText;
@@ -33,7 +34,7 @@ public class UIController : MonoBehaviour
 
     [Space(20f)]
     [SerializeField] GameObject selectUnitsInfo;
-    [SerializeField] GameObject[] selectUnitsIcons;
+    [SerializeField] UIIconSlot[] selectUnitsIcons;
 
 
     [Header("Build Slot")]
@@ -55,6 +56,52 @@ public class UIController : MonoBehaviour
 
     public void UnitSelectEvent()
     {
+        DebugTool.Log("Unit Select");
+
+        if (unitData.SelectedUnitList.Count == 0)
+            return;
+
+        Unit unit = unitData.SelectedUnitList[0];
+
+        selectUnitInfo.gameObject.SetActive(true);
+        selectUnitsInfo.gameObject.SetActive(false);
+
+
+        selectUnitImage.sprite = unit.UnitInfo.unitSprite;
+        selectUnitRarityText.text = unit.UnitInfo.unitRank.ToString();
+        selectUnitNameText.text = unit.UnitInfo.unitName;
+        selectUnitAtkText.text = unit.UnitInfo.unitMinAtk + " - " + unit.UnitInfo.unitMaxAtk;
+        selectUnitArmText.text = unit.UnitInfo.unitArm.ToString();
 
     }
+
+
+    public void UnitsSelectEvent()
+    {
+        DebugTool.Log("Units Select");
+
+        if (unitData.SelectedUnitList.Count == 0)
+            return;
+
+        selectUnitInfo.gameObject.SetActive(false);
+        selectUnitsInfo.gameObject.SetActive(true);
+
+        List<Unit> units = unitData.SelectedUnitList;
+
+        selectUnitImage.sprite = units[0].UnitInfo.unitSprite;
+
+        for (int i = 0; i < selectUnitsIcons.Length; i++)
+            selectUnitsIcons[i].gameObject.SetActive(false);
+
+        for (int i = 0; i < units.Count; i++)
+        {
+            selectUnitsIcons[i].SlotIcon.sprite = units[i].UnitInfo.unitIconSprite;
+            selectUnitsIcons[i].gameObject.SetActive(true);
+        }
+
+
+    }
+
+
+
 }

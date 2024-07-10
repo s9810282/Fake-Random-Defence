@@ -7,6 +7,7 @@ public class Unit: MonoBehaviour
 {
     [Header("UserSystem")]
     [SerializeField] UnitInfo unitInfo;
+    [SerializeField] UnitData tmpdata;
 
     [SerializeField] GameObject marker;
     [SerializeField] NavMeshAgent nav;
@@ -17,6 +18,8 @@ public class Unit: MonoBehaviour
     [SerializeField] float stopDistance;
     [SerializeField] bool isMove = false;
 
+    [SerializeField] GameUnitData testData;
+
     public UnitInfo UnitInfo { get => unitInfo; set => unitInfo = value; }
 
 
@@ -26,6 +29,8 @@ public class Unit: MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
+        unitInfo = tmpdata.unitInfo;
+        testData.AddUnit(this);
         fsm = new FSM(new IdleState(this));
     }
 

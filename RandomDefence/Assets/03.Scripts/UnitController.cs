@@ -15,23 +15,23 @@ public class UnitController : MonoBehaviour
     [SerializeField] float scale;
     [SerializeField] Vector3 origin;
 
-    [SerializeField] List<Unit> selectedUnitList = new List<Unit>();
-    [SerializeField] List<Unit> unitList = new List<Unit>();
+    [SerializeField] GameUnitData gameUnitData;
 
     [SerializeField] bool isDebug = true;
 
     [Header("Event")]
-    GameEvent unitSelectEvent;
-    GameEvent unitsSelectEvent;
+    [SerializeField] GameEvent unitSelectEvent;
+    [SerializeField] GameEvent unitsSelectEvent;
     
 
 
     void Start()
     {
+        gameUnitData.Init();
+
         DebugTool.isDebug = isDebug;
 
         pathFinding = new PathFinding(maxX, maxY, cellSize, origin);
-        selectedUnitList = new List<Unit>();
     }
 
     
@@ -53,11 +53,11 @@ public class UnitController : MonoBehaviour
 
         int count = 0;
 
-        for(int i = 0; i < selectedUnitList.Count; i++)
+        for(int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
         {
             count += i;
 
-            pathFinding.GetGrid().GetXY3D(selectedUnitList[i].transform.position, out int a, out int b);
+            pathFinding.GetGrid().GetXY3D(gameUnitData.SelectedUnitList[i].transform.position, out int a, out int b);
             List<PathNode> path = pathFinding.FindPath(a, b, x, y);
 
             UnitMoveTo(path, i);
@@ -83,19 +83,16 @@ public class UnitController : MonoBehaviour
 
     public void UnitMoveTo(Vector3 vector)
     {
-        for (int i = 0; i < selectedUnitList.Count; i++)
-            selectedUnitList[i].MoveTo(vector);
+        gameUnitData.UnitMoveTo(vector);
     }
 
     public void UnitMoveTo(List<PathNode> path)
     {
-        for (int i = 0; i < selectedUnitList.Count; i++)
-            selectedUnitList[i].MoveTo(path);
+        gameUnitData.UnitMoveTo(path);
     }
     public void UnitMoveTo(List<PathNode> path, int index)
     {
-        if (selectedUnitList[index] != null)
-            selectedUnitList[index].MoveTo(path);
+        gameUnitData.UnitMoveTo(path, index);
     }
 
     #endregion
@@ -109,22 +106,26 @@ public class UnitController : MonoBehaviour
         //if(selectedUnitList.Count <= 0)
         //    SelectUnit(unit);
 
-        if (!selectedUnitList.Contains(unit))
+        if (!gameUnitData.SelectedUnitList.Contains(unit))
         {
             SelectUnit(unit);
         }
+
+        unitsSelectEvent.Raise();
     }
 
     public void ClickSelectUnit(Unit unit)
     {
         DeSelectUnitAll();
-
         SelectUnit(unit);
+
+
+        unitSelectEvent.Raise();
     }
 
     public void ShiftClickSelectUnit(Unit unit)
     {
-        if(selectedUnitList.Contains(unit))
+        if(gameUnitData.SelectedUnitList.Contains(unit))
         {
             DeSelectUnit(unit);
         }
@@ -136,31 +137,28 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public void DeSelectUnitAll()
-    {
-        DebugTool.Log("RemoveAll");
 
-        for (int i = 0; i < selectedUnitList.Count; i++)
-            selectedUnitList[i].DeSelectUnit();
 
-        selectedUnitList.Clear();
-    }
 
     public void SelectUnit(Unit unit)
     {
-        selectedUnitList.Add(unit);
-        unit.SelectUnit();
+        gameUnitData.SelectUnit(unit);
+    }
+
+    public void DeSelectUnitAll()
+    {
+        gameUnitData.DeSelectUnitAll();
     }
 
     public void DeSelectUnit(Unit unit)
     {
-        selectedUnitList.Remove(unit);
-        unit.DeSelectUnit();
+        gameUnitData.DeSelectUnit(unit);
     }
+
 
     public List<Unit> ReturnUnitList()
     {
-        return unitList;
+        return gameUnitData.UnitList;
     }
 
     #endregion
@@ -193,7 +191,7 @@ public class UnitController : MonoBehaviour
 
         int targetPositionListIndex = 0;
 
-        foreach (Unit unit in selectedUnitList)
+        foreach (Unit unit in gameUnitData.SelectedUnitList)
         {
             //unit.ClearTarget();
             unit.MoveTo(targetPositionList[targetPositionListIndex]);
