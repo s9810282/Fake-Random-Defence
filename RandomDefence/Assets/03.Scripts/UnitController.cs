@@ -22,15 +22,17 @@ public class UnitController : MonoBehaviour
     [Header("Event")]
     [SerializeField] GameEvent unitSelectEvent;
     [SerializeField] GameEvent unitsSelectEvent;
-    
 
+
+    private void OnEnable()
+    {
+        DebugTool.isDebug = isDebug;
+        gameUnitData.Init();
+
+    }
 
     void Start()
     {
-        gameUnitData.Init();
-
-        DebugTool.isDebug = isDebug;
-
         pathFinding = new PathFinding(maxX, maxY, cellSize, origin);
     }
 
@@ -119,6 +121,14 @@ public class UnitController : MonoBehaviour
         DeSelectUnitAll();
         SelectUnit(unit);
 
+        unitSelectEvent.Raise();
+    }
+    public void ClickSelectUnit(UIIconSlot slot)
+    {
+        Unit unit = slot.Unit;
+
+        DeSelectUnitAll();
+        SelectUnit(unit);
 
         unitSelectEvent.Raise();
     }

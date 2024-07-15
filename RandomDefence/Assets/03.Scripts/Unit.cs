@@ -30,7 +30,8 @@ public class Unit: MonoBehaviour
     protected virtual void Start()
     {
         unitInfo = tmpdata.unitInfo;
-        testData.AddUnit(this);
+        Debug.Log(testData.AddUnit(this));
+
         fsm = new FSM(new IdleState(this));
     }
 

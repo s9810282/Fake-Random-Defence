@@ -13,4 +13,10 @@ MonoBehaviour:
   m_Name: GameUnitData
   m_EditorClassIdentifier: 
   selectedUnitList: []
-  unitList: []
+  unitList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

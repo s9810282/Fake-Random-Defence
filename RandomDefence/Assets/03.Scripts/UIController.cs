@@ -44,13 +44,30 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void ClickUnitIcon(UIIconSlot slot)
+    {
+        Unit unit = slot.Unit;
+
+        selectUnitInfo.gameObject.SetActive(true);
+        selectUnitsInfo.gameObject.SetActive(false);
+
+
+        selectUnitImage.sprite = unit.UnitInfo.unitSprite;
+        selectUnitRarityText.text = unit.UnitInfo.unitRank.ToString();
+        selectUnitNameText.text = unit.UnitInfo.unitName;
+        selectUnitAtkText.text = unit.UnitInfo.unitMinAtk + " - " + unit.UnitInfo.unitMaxAtk;
+        selectUnitArmText.text = unit.UnitInfo.unitArm.ToString();
+
+
     }
 
 
@@ -72,7 +89,6 @@ public class UIController : MonoBehaviour
         selectUnitNameText.text = unit.UnitInfo.unitName;
         selectUnitAtkText.text = unit.UnitInfo.unitMinAtk + " - " + unit.UnitInfo.unitMaxAtk;
         selectUnitArmText.text = unit.UnitInfo.unitArm.ToString();
-
     }
 
 
@@ -95,11 +111,10 @@ public class UIController : MonoBehaviour
 
         for (int i = 0; i < units.Count; i++)
         {
+            selectUnitsIcons[i].Unit = units[i];
             selectUnitsIcons[i].SlotIcon.sprite = units[i].UnitInfo.unitIconSprite;
             selectUnitsIcons[i].gameObject.SetActive(true);
         }
-
-
     }
 
 
