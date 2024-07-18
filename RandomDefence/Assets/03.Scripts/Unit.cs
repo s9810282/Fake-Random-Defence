@@ -17,11 +17,11 @@ public class Unit: MonoBehaviour
     [Header("Move")]
     [SerializeField] float stopDistance;
     [SerializeField] bool isMove = false;
+    [SerializeField] bool isAttack = false;
 
     [SerializeField] GameUnitData testData;
 
     public UnitInfo UnitInfo { get => unitInfo; set => unitInfo = value; }
-
 
     //FSM 쓰도록 합시다. 일단 무빙 구현 ㄱ ㄱ
 
@@ -52,6 +52,33 @@ public class Unit: MonoBehaviour
     }
 
 
+    #region Attack
+
+    public void Attack(IDamageAble target)
+    {
+        isMove = false;
+        isAttack = true;
+
+        anim.SetBool("isMove", false);
+        anim.SetBool("isAttack", true);
+
+        fsm.ChangeState(new AttackState(this, target));
+    }
+
+    public void AttackMove(IDamageAble target, List<PathNode> path)
+    {
+        fsm.ChangeState(new AttackMoveState(this, target, path, unitInfo.unitRange));
+    }
+
+    public void AtkAnimExitEvent()
+    {
+
+    }
+
+    #endregion
+
+
+
     #region Move
 
     public void ClearTarget()
@@ -65,20 +92,37 @@ public class Unit: MonoBehaviour
     }
     public void MoveTo(List<PathNode> path)
     {
+        isMove = true;
+        isAttack = false;
+
         anim.SetBool("isMove", true);
+        anim.SetBool("isAttack", false);
+
         fsm.ChangeState(new MoveState(this, path));
     }
     public void ArriveTarget()
     {
+        isMove = false;
+        isAttack = false;
+
         anim.SetBool("isMove", false);
+        anim.SetBool("isAttack", false);
+
         fsm.ChangeState(new IdleState(this));
     }
 
     #endregion
 
+
+
     public void Hold()
     {
+        isMove = false;
+        isAttack = false;
+
         anim.SetBool("isMove", false);
+        anim.SetBool("isAttack", false);
+
         fsm.ChangeState(new IdleState(this));
     }
 }

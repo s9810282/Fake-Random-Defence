@@ -64,21 +64,4 @@ public class GameUnitData : ScriptableObject
 
         selectedUnitList.Clear();
     }
-
-    public void UnitMoveTo(Vector3 vector)
-    {
-        for (int i = 0; i < selectedUnitList.Count; i++)
-            selectedUnitList[i].MoveTo(vector);
-    }
-    public void UnitMoveTo(List<PathNode> path)
-    {
-        for (int i = 0; i < selectedUnitList.Count; i++)
-            selectedUnitList[i].MoveTo(path);
-    }
-    public void UnitMoveTo(List<PathNode> path, int index)
-    {
-        if (selectedUnitList[index] != null)
-            selectedUnitList[index].MoveTo(path);
-    }
-
 }

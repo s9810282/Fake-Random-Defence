@@ -21,3 +21,5 @@ MonoBehaviour:
     unitMaxAtk: 19
     unitSpeed: 1
     unitArm: -1
+    unitRange: 5
+    unitAttackDelay: 0.5

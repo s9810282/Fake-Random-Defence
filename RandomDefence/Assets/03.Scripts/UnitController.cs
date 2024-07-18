@@ -36,7 +36,7 @@ public class UnitController : MonoBehaviour
         pathFinding = new PathFinding(maxX, maxY, cellSize, origin);
     }
 
-    
+
     void Update()
     {
 
@@ -46,16 +46,16 @@ public class UnitController : MonoBehaviour
 
     #region Move
 
-    public void PathFinding(Vector3 pos) //이걸 선택한 유닛수만큼 따로 따로 돌려야함
+    public void PathFindingToMove(Vector3 pos) //이걸 선택한 유닛수만큼 따로 따로 돌려야함
     {
-        //이동불가 지역인가? 
+        //이동불가 지역인가?  아 시발 이것도 해야함 ㅋ
 
 
         pathFinding.GetGrid().GetXY3D(pos, out int x, out int y);
 
         int count = 0;
 
-        for(int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
+        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
         {
             count += i;
 
@@ -67,7 +67,7 @@ public class UnitController : MonoBehaviour
 
         //pathFinding.GetGrid().GetXY3D(testUnit.transform.position, out int a, out int b);
         //List<PathNode> path = pathFinding.FindPath(a, b, x, y); //지금은 그냥 0,0 인덱스부터 검색
-            
+
         //UnitMoveTo(path);
 
         //if (path != null)
@@ -81,23 +81,70 @@ public class UnitController : MonoBehaviour
         //    }
         //}
     }
+    public void PathFindingToAttack(IDamageAble target, Vector3 pos) //이걸 선택한 유닛수만큼 따로 따로 돌려야함
+    {
+        //이동불가 지역인가?  아 시발 이것도 해야함 ㅋ
+
+
+        pathFinding.GetGrid().GetXY3D(pos, out int x, out int y); //target XY
+
+        int count = 0;
+
+        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
+        {
+            count += i;
+
+            if (Vector3.Distance(transform.position, pos) < 
+                gameUnitData.SelectedUnitList[i].UnitInfo.unitRange)
+            {
+
+            }
+            else
+            {
+                pathFinding.GetGrid().GetXY3D(gameUnitData.SelectedUnitList[i].transform.position, out int a, out int b);
+                List<PathNode> path = pathFinding.FindPath(a, b, x, y);
+
+                AttackMove(target, path, i);
+            }
+        }
+    }
 
 
     public void UnitMoveTo(Vector3 vector)
     {
-        gameUnitData.UnitMoveTo(vector);
+        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
+            gameUnitData.SelectedUnitList[i].MoveTo(vector);
     }
-
     public void UnitMoveTo(List<PathNode> path)
     {
-        gameUnitData.UnitMoveTo(path);
+        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
+            gameUnitData.SelectedUnitList[i].MoveTo(path);
     }
     public void UnitMoveTo(List<PathNode> path, int index)
     {
-        gameUnitData.UnitMoveTo(path, index);
+        if (gameUnitData.SelectedUnitList[index] != null)
+            gameUnitData.SelectedUnitList[index].MoveTo(path);
     }
 
     #endregion
+
+    #region Attack
+
+    public void UnitAttack(IDamageAble target, int index)
+    {
+        if (gameUnitData.SelectedUnitList[index] != null)
+            gameUnitData.SelectedUnitList[index].Attack(target);
+    }
+
+    public void AttackMove(IDamageAble target, List<PathNode> path, int index)
+    {
+        if (gameUnitData.SelectedUnitList[index] != null)
+            gameUnitData.SelectedUnitList[index].AttackMove(target, path);
+    }
+
+
+    #endregion
+
 
 
 
@@ -135,7 +182,7 @@ public class UnitController : MonoBehaviour
 
     public void ShiftClickSelectUnit(Unit unit)
     {
-        if(gameUnitData.SelectedUnitList.Contains(unit))
+        if (gameUnitData.SelectedUnitList.Contains(unit))
         {
             DeSelectUnit(unit);
         }

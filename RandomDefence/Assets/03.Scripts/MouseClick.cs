@@ -9,6 +9,7 @@ public class MouseClick : MonoBehaviour
     [SerializeField] Camera mainCamera;
     [SerializeField] LayerMask unitLayer;
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask enemyLayer;
 
     // Start is called before the first frame update
     void Start()
@@ -51,13 +52,24 @@ public class MouseClick : MonoBehaviour
         {
             ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, enemyLayer))
             {
                 if (hit.collider == null) return;
 
-                unitController.PathFinding(hit.point);
+                DebugTool.Log("Target Enemy");
+
+                IDamageAble target = hit.collider.GetComponent<IDamageAble>();
+                unitController.PathFindingToAttack(target, hit.point);
+
+            }
+            else if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+            {
+                if (hit.collider == null) return;
+
+                unitController.PathFindingToMove(hit.point);
                 //unitController.UnitMoveTo(hit.point);
             }
+            
         }
     }
 }

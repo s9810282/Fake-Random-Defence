@@ -24,6 +24,8 @@ public class UnitInfo
     public int unitMaxAtk;
     public int unitSpeed = 1;
     public int unitArm;
+    public int unitRange = 3;
+    public float unitAttackDelay = 0.5f;
 }
 
 
