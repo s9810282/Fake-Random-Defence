@@ -21,7 +21,7 @@ public class PathTEst : MonoBehaviour
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            pathFinding.GetGrid().GetXY(pos, out int x, out int y);
+            pathFinding.GetGrid().GetXY2D(pos, out int x, out int y);
 
             List<PathNode> path = pathFinding.FindPath(0, 0, x, y);
 
@@ -42,7 +42,7 @@ public class PathTEst : MonoBehaviour
         {
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            pathFinding.GetGrid().GetXY(pos, out int x, out int y);
+            pathFinding.GetGrid().GetXY2D(pos, out int x, out int y);
             pathFinding.GetNode(x, y).SetIsWalkAble(!pathFinding.GetNode(x,y).isWalkable);
         } 
     }

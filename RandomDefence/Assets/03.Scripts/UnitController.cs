@@ -1,6 +1,8 @@
-using System;
-using System.Collections;
+ï»¿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -16,6 +18,7 @@ public class UnitController : MonoBehaviour
     [SerializeField] Vector3 origin;
 
     [SerializeField] GameUnitData gameUnitData;
+    [SerializeField] float unitSpacing = 2f; // ìœ ë‹› ê°„ê²©
 
     [SerializeField] bool isDebug = true;
 
@@ -28,7 +31,6 @@ public class UnitController : MonoBehaviour
     {
         DebugTool.isDebug = isDebug;
         gameUnitData.Init();
-
     }
 
     void Start()
@@ -46,47 +48,21 @@ public class UnitController : MonoBehaviour
 
     #region Move
 
-    public void PathFindingToMove(Vector3 pos) //ÀÌ°É ¼±ÅÃÇÑ À¯´Ö¼ö¸¸Å­ µû·Î µû·Î µ¹·Á¾ßÇÔ
+    public void PathFindingToMove(Vector3 targetPos) //ì´ê±¸ ì„ íƒí•œ ìœ ë‹›ìˆ˜ë§Œí¼ ë”°ë¡œ ë”°ë¡œ ëŒë ¤ì•¼í•¨
     {
-        //ÀÌµ¿ºÒ°¡ Áö¿ªÀÎ°¡?  ¾Æ ½Ã¹ß ÀÌ°Íµµ ÇØ¾ßÇÔ ¤»
+        //ì´ë™ë¶ˆê°€ ì§€ì—­ì¸ê°€?  ì•„ ì‹œë°œ ì´ê²ƒë„ í•´ì•¼í•¨ ã…‹
 
+        List<List<Vector3>> unitPaths = new List<List<Vector3>>();
 
-        pathFinding.GetGrid().GetXY3D(pos, out int x, out int y);
-
-        int count = 0;
-
-        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
-        {
-            count += i;
-
-            pathFinding.GetGrid().GetXY3D(gameUnitData.SelectedUnitList[i].transform.position, out int a, out int b);
-            List<PathNode> path = pathFinding.FindPath(a, b, x, y);
-
-            UnitMoveTo(path, i);
-        }
-
-        //pathFinding.GetGrid().GetXY3D(testUnit.transform.position, out int a, out int b);
-        //List<PathNode> path = pathFinding.FindPath(a, b, x, y); //Áö±İÀº ±×³É 0,0 ÀÎµ¦½ººÎÅÍ °Ë»ö
-
-        //UnitMoveTo(path);
-
-        //if (path != null)
-        //{
-        //    DebugTool.DrawLine(transform.position, path[0].worldPosition, Color.black, 10f);
-
-        //    for (int i = 0; i < path.Count - 1; i++)
-        //    {
-        //        //DebugTool.DrawLine(new Vector3(path[i].x, 0, path[i].y) * cellSize + Vector3.one * 2.5f, new Vector3(path[i + 1].x, 0, path[i + 1].y) * cellSize + Vector3.one * 2.5f, Color.black, 10f);
-        //        DebugTool.DrawLine(path[i].worldPosition, path[i + 1].worldPosition, Color.black, 10f);
-        //    }
-        //}
+        unitPaths = AssignPathsToUnits(targetPos);
+        UnitMoveTo(unitPaths);
     }
-    public void PathFindingToAttack(IDamageAble target, Vector3 pos) //ÀÌ°É ¼±ÅÃÇÑ À¯´Ö¼ö¸¸Å­ µû·Î µû·Î µ¹·Á¾ßÇÔ
+    public void PathFindingToAttack(IDamageAble target, Vector3 targetPos) //ì´ê±¸ ì„ íƒí•œ ìœ ë‹›ìˆ˜ë§Œí¼ ë”°ë¡œ ë”°ë¡œ ëŒë ¤ì•¼í•¨
     {
-        //ÀÌµ¿ºÒ°¡ Áö¿ªÀÎ°¡?  ¾Æ ½Ã¹ß ÀÌ°Íµµ ÇØ¾ßÇÔ ¤»
+        //ì´ë™ë¶ˆê°€ ì§€ì—­ì¸ê°€?  ì•„ ì‹œë°œ ì´ê²ƒë„ í•´ì•¼í•¨ ã…‹
 
 
-        pathFinding.GetGrid().GetXY3D(pos, out int x, out int y); //target XY
+        pathFinding.GetGrid().GetXY3D(targetPos, out int x, out int y); //target XY
 
         int count = 0;
 
@@ -94,7 +70,7 @@ public class UnitController : MonoBehaviour
         {
             count += i;
 
-            if (Vector3.Distance(transform.position, pos) < 
+            if (Vector3.Distance(transform.position, targetPos) < 
                 gameUnitData.SelectedUnitList[i].UnitInfo.unitRange)
             {
 
@@ -109,22 +85,86 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    public void UnitMoveTo(List<List<Vector3>> unitPaths)
+    {
+        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
+        {
+            if (gameUnitData.SelectedUnitList[i] == null) Debug.LogError($"UnitData index {i} Null");
+            if (unitPaths[i] == null) Debug.LogError($"UnitPaths index {i} Null");
 
-    public void UnitMoveTo(Vector3 vector)
+            gameUnitData.SelectedUnitList[i].MoveTo(unitPaths[i]);
+        }
+    }
+
+
+
+
+    List<List<Vector3>> AssignPathsToUnits(Vector3 target)
     {
+        List<List<Vector3>> unitPaths = new List<List<Vector3>>();
+        unitPaths.Clear();
+
+        // ìœ ë‹›ì„ ê²©ì í˜•íƒœë¡œ ë°°ì¹˜ (ë„¤ëª¨ í˜•íƒœì˜ í¬ë©”ì´ì…˜)
+        int rowCount = Mathf.CeilToInt(Mathf.Sqrt(gameUnitData.SelectedUnitList.Count));
+
         for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
-            gameUnitData.SelectedUnitList[i].MoveTo(vector);
+        {
+            int row = i / rowCount;
+            int col = i % rowCount;
+
+            Vector3 offset = new Vector3(col * unitSpacing, 0, row * unitSpacing);
+            Vector3 potentialTargetPosition = target + offset;
+
+            // ğŸš§ ì´ë™ ë¶ˆê°€ëŠ¥í•œ ìœ„ì¹˜ë¼ë©´, ê°€ì¥ ê°€ê¹Œìš´ ì´ë™ ê°€ëŠ¥ ìœ„ì¹˜ ì°¾ê¸°
+            PathNode targetNode = pathFinding.GetGrid().GetGridObject3D(potentialTargetPosition);
+            if (targetNode == null || !targetNode.isWalkable)   
+            {
+                Debug.Log("targetNode isWalkable");
+                potentialTargetPosition = FindClosestWalkablePosition(potentialTargetPosition);
+            }
+
+
+            // A* ê²½ë¡œ íƒìƒ‰ ì‹¤í–‰
+            Vector3 unitPosition = gameUnitData.SelectedUnitList[i].transform.position;
+            PathNode unitNode = pathFinding.GetGrid().GetGridObject3D(unitPosition);
+            List<PathNode> pathNodes = pathFinding.FindPath(unitNode.x, unitNode.y, targetNode.x, targetNode.y);
+
+            // PathNode ë¦¬ìŠ¤íŠ¸ë¥¼ Vector3 ë¦¬ìŠ¤íŠ¸ë¡œ ë³€í™˜
+            List<Vector3> path = new List<Vector3>();
+            if (pathNodes != null)
+            {
+                foreach (var node in pathNodes)
+                {
+                    path.Add(new Vector3(node.worldPosition.x, 0, node.worldPosition.z));
+                }
+            }
+
+            unitPaths.Add(path);
+        }
+
+        return unitPaths;
     }
-    public void UnitMoveTo(List<PathNode> path)
+
+
+    Vector3 FindClosestWalkablePosition(Vector3 position)
     {
-        for (int i = 0; i < gameUnitData.SelectedUnitList.Count; i++)
-            gameUnitData.SelectedUnitList[i].MoveTo(path);
+        PathNode node = pathFinding.GetGrid().GetGridObject2D(position);
+        if (node != null && node.isWalkable)
+        {
+            return position;
+        }
+
+        foreach (PathNode neighbor in pathFinding.GetNeighbourList(node))
+        {
+            if (neighbor.isWalkable)
+            {
+                return new Vector3(neighbor.worldPosition.x, 0, neighbor.worldPosition.z);
+            }
+        }
+
+        return position; // ë§Œì•½ ì´ë™ ê°€ëŠ¥í•œ ìœ„ì¹˜ê°€ ì—†ìœ¼ë©´ ì›ë˜ ìœ„ì¹˜ ë°˜í™˜
     }
-    public void UnitMoveTo(List<PathNode> path, int index)
-    {
-        if (gameUnitData.SelectedUnitList[index] != null)
-            gameUnitData.SelectedUnitList[index].MoveTo(path);
-    }
+
 
     #endregion
 
@@ -225,7 +265,7 @@ public class UnitController : MonoBehaviour
     private void UnitRightClick(Vector3 pos)
     {
 
-        ////Àû »öÀû ¹× °ø°İ
+        ////ì  ìƒ‰ì  ë° ê³µê²©
         //Collider2D[] collider2DArray = Physics2D.OverlapPointAll(UtilsClass.GetMouseWorldPosition());
         //foreach (Collider2D collider2D in collider2DArray)
         //{

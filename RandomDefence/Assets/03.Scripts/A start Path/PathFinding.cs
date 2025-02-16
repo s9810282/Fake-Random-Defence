@@ -149,7 +149,7 @@ public class PathFinding
 
     public PathNode GetNode(Vector3 pos)
     {
-        return grid.GetGridObject(pos);
+        return grid.GetGridObject2D(pos);
     }
 
 

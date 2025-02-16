@@ -303,6 +303,7 @@ MonoBehaviour:
   scale: 1
   origin: {x: -20, y: 0, z: -40}
   gameUnitData: {fileID: 11400000, guid: 6f3e8b62dbccee441a24133637744af3, type: 2}
+  unitSpacing: 2
   isDebug: 1
   unitSelectEvent: {fileID: 11400000, guid: 770f8d907c8c10d40a3f39f7917d8569, type: 2}
   unitsSelectEvent: {fileID: 11400000, guid: b1c7a15ce2cb8f04199679f43ea20457, type: 2}
@@ -21237,7 +21238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4047972261196417
 Transform:
   m_ObjectHideFlags: 0

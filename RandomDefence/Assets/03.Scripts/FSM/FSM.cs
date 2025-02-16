@@ -2,6 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EUnitState
+{ 
+    Idle,
+    Move,
+    Attack,
+    AttackMove, // 공격 중 멀어지면 따라가면서 떄림
+    Hold, //제자리를 유지하면서 적 감지 시 공격
+}
+
+
+
 
 [System.Serializable]
 public class FSM

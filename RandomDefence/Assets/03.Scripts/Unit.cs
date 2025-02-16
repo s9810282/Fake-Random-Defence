@@ -30,7 +30,7 @@ public class Unit: MonoBehaviour
     protected virtual void Start()
     {
         unitInfo = tmpdata.unitInfo;
-        Debug.Log(testData.AddUnit(this));
+        testData.AddUnit(this);
 
         fsm = new FSM(new IdleState(this));
     }
@@ -90,7 +90,7 @@ public class Unit: MonoBehaviour
     {
         
     }
-    public void MoveTo(List<PathNode> path)
+    public void MoveTo(List<Vector3> path)
     {
         isMove = true;
         isAttack = false;

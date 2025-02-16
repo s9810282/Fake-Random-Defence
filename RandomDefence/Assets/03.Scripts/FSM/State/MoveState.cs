@@ -1,21 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MoveState : BaseState
 {
-    private List<PathNode> movePath;
+    private List<Vector3> movePath;
 
     private bool isMove;
     private Vector3 targetPos;
     private int pathCount;
     private int currentCount;
 
-    public MoveState(Unit unit, List<PathNode> path) : base(unit, State.Move)
+    
+    public MoveState(Unit unit, List<Vector3> path) : base(unit, State.Move)
     {
         movePath = path;
         currentCount = 0;
     }
+
 
 
     public override void OnStateEnter()
@@ -40,16 +43,14 @@ public class MoveState : BaseState
         ChekcMoveTarget();
     }
 
-
-
-    public void MoveTo(List<PathNode> path)
+    public void MoveTo(List<Vector3> path)
     {
         isMove = true;
         movePath = path;
         pathCount = path.Count;
         currentCount = 0;
 
-        targetPos = new Vector3(path[currentCount].worldPosition.x, 0.2f, path[currentCount].worldPosition.z);
+        targetPos = new Vector3(path[currentCount].x, 0.2f, path[currentCount].z);
     }
 
     public void MoveTo(Vector3 pos)
@@ -74,8 +75,8 @@ public class MoveState : BaseState
             }
 
             currentCount++;
-            targetPos = movePath[currentCount].worldPosition;
-            targetPos = new Vector3(movePath[currentCount].worldPosition.x, 0.2f, movePath[currentCount].worldPosition.z);
+            targetPos = movePath[currentCount];
+            targetPos = new Vector3(movePath[currentCount].x, 0.2f, movePath[currentCount].z);
         }
     }
 

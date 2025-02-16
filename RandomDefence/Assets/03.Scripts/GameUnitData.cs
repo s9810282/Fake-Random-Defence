@@ -39,7 +39,6 @@ public class GameUnitData : ScriptableObject
     {
         if (!unitList.Contains(unit))
         {
-            Debug.Log("Add");
             unitList.Add(unit);
             return true;
         }
